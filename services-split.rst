@@ -47,13 +47,13 @@ a project name for the "services" repo is selected.
 * Currently the neutron code is in a single repo, with a single set of cores.
 
 * After the split, we want all "services" code and db models will be in a new
-services repo, preserving history.
+  services repo, preserving history.
 
 * After the split, we want no services code to be in the neutron repo, with
-non-relavant history pruned.
+  non-relavant history pruned.
 
 * During the split, an infra/project-config change for the new repo, shared
-spec repo, and new core team will be created.
+  spec repo, and new core team will be created.
 
 * The PTL will determine if any change to either core team is appropriate.
 
@@ -67,33 +67,38 @@ spec repo, and new core team will be created.
 Proposed Change
 ===============
 
-* The repo will be split via infra scripts which will preserve history for all changes.
+* The repo will be split via infra scripts which will preserve history for all
+  changes.
 
 * The existing services code (e.g. lbaas v1), will move into the services repo
-and be maintained by that repo's team going forward.
+  and be maintained by that repo's team going forward.
 
-* Initially, the services repo will not have its own REST service, and will utilize neutron extensions to share the neutron API namespace.
+* Initially, the services repo will not have its own REST service, and will
+  utilize neutron extensions to share the neutron API namespace.
 
 * The services repo will include neutron as a dependency in the
-requirements.txt file, and the services code may import neutron as a library.
+  requirements.txt file, and the services code may import neutron as a library.
 
 * The neutron repo will have some manner of dependency specified for packaging,
-so that installs of neutron will pull in the services repo in the short-term.
-A hacking check will be added to ensure that neutron code does not import
-services code as a library.
+  so that installs of neutron will pull in the services repo in the short-term.
+  A hacking check will be added to ensure that neutron code does not import
+  services code as a library.
 
-* Extensions will stay inside the neutron repo, at least until after the REST refactor, which will hopefully support out-of-tree extensions.
+* Extensions will stay inside the neutron repo, at least until after the REST
+  refactor, which will hopefully support out-of-tree extensions.
 
-* Code merged onto the existing 'feature/lbaasv2' neutron feature branch will be merged into the service repo as part of the split.
+* Code merged onto the existing 'feature/lbaasv2' neutron feature branch will
+  be merged into the service repo as part of the split.
 
-* All outstanding gerrit reviews for services, currently submitted against Neutron, will have to be abandoned and resubmitted against the services repo.
+* All outstanding gerrit reviews for services, currently submitted against 
+  Neutron, will have to be abandoned and resubmitted against the services repo.
 
 * Tox will pass cleanly in both projects immediately post-split.
 
 * The services repo will not support python 2.6.
 
 * Backported fixes will be merged into neutron/stable branches by the
-"services" team, approved by the stable team.
+  "services" team, approved by the stable team.
 
 * The services repo will use its own database (see Data Model Impact)
 
@@ -147,7 +152,7 @@ services project.  When going from Icehouse or Juno to Kilo, the upgrade
 script to move appropriate db and config data should be run.
 
 * Do we need to support reading data from neutron db and config file in a lazy
-upgrade format, or as a fallback, to provide seamless upgrade?
+  upgrade format, or as a fallback, to provide seamless upgrade?
 
 Developer Impact
 ----------------
@@ -157,7 +162,8 @@ Anyone importing neutron.services will have to import the new project modules in
 Community Impact
 ----------------
 
-This split was discussed at the Neutron summit and the openstack-dev mailing list.
+This split was discussed at the Neutron summit and the openstack-dev mailing
+list.
 
 Alternatives
 ------------
@@ -236,7 +242,8 @@ Testing
 
 * Unit tests will split between repos, matching the code split.
 
-* Tempest tests will initiall remain unchanged, as the service endpoint will be identical before and after the split.
+* Tempest tests will initiall remain unchanged, as the service endpoint will
+  be identical before and after the split.
 
 Tempest Tests
 -------------
