@@ -6,4 +6,6 @@ Stuff needing into a script somewhere:
 
 After running "split-all", the following steps must be done by hand:
 
-1. 
+1. Review output logs for errors.
+2. diff -ru with a vanilla neutron, to verify deletions are correct
+

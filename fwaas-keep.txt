@@ -1,4 +1,4 @@
-./neutron/db/firewall
-./neutron/services/firewall
-./neutron/tests/unit/db/firewall
-./neutron/tests/unit/services/firewall
+neutron/db/firewall
+neutron/services/firewall
+neutron/tests/unit/db/firewall
+neutron/tests/unit/services/firewall

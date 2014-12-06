@@ -40,15 +40,15 @@ fi
 
 # Redirect stdout/stderr to tee to write the log file
 # (borrowed from verbose mode handling in devstack)
-# exec 1> >( awk '
-#                 {
-#                     cmd ="date +\"%Y-%m-%d %H:%M:%S \""
-#                     cmd | getline now
-#                     close("date +\"%Y-%m-%d %H:%M:%S \"")
-#                     sub(/^/, now)
-#                     print
-#                     fflush()
-#                 }' | tee "$logfile" ) 2>&1
+exec 1> >( awk '
+                {
+                    cmd ="date +\"%Y-%m-%d %H:%M:%S \""
+                    cmd | getline now
+                    close("date +\"%Y-%m-%d %H:%M:%S \"")
+                    sub(/^/, now)
+                    print
+                    fflush()
+                }' | tee "$logfile" ) 2>&1
 
 function count_commits {
     echo
@@ -74,7 +74,7 @@ cd "$dst_repo"
 
 
 # Build the grep pattern for ignoring files that we want to keep
-keep_pattern="\($(echo $files_to_keep | sed -e 's/ /\\|/g')\)"
+keep_pattern="\($(echo $files_to_keep | sed -e 's/^/\^/' -e 's/ /\\|\^/g')\)"
 # Prune all other files in every commit
 pruner="git ls-files | grep -v \"$keep_pattern\" | git update-index --force-remove --stdin; git ls-files > /dev/stderr"
 

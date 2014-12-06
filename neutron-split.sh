@@ -22,7 +22,7 @@ set -e
 tmpdir=$(mktemp -d -t neutron-split.XXXX)
 mkdir -p $tmpdir
 logfile=$tmpdir/output.log
-# echo "Logging to $logfile"
+echo "Logging to $logfile"
 
 src_repo="$1"
 dst_repo="$2"
@@ -37,15 +37,15 @@ fi
 
 # Redirect stdout/stderr to tee to write the log file
 # (borrowed from verbose mode handling in devstack)
-# exec 1> >( awk '
-#                 {
-#                     cmd ="date +\"%Y-%m-%d %H:%M:%S \""
-#                     cmd | getline now
-#                     close("date +\"%Y-%m-%d %H:%M:%S \"")
-#                     sub(/^/, now)
-#                     print
-#                     fflush()
-#                 }' | tee "$logfile" ) 2>&1
+exec 1> >( awk '
+                {
+                    cmd ="date +\"%Y-%m-%d %H:%M:%S \""
+                    cmd | getline now
+                    close("date +\"%Y-%m-%d %H:%M:%S \"")
+                    sub(/^/, now)
+                    print
+                    fflush()
+                }' | tee "$logfile" ) 2>&1
 
 function count_commits {
     echo
@@ -71,16 +71,17 @@ cd "$dst_repo"
 
 
 # Build the grep pattern for ignoring files that we want to keep
-exclude_pattern="\($(echo $files_to_exclude | sed -e 's/ /\\|/g')\)"
+exclude_pattern="\($(echo $files_to_exclude | sed -e 's/^/\^/' -e 's/ /\\|\^/g')\)"
 # Prune all other files in every commit
 pruner="git ls-files | grep \"$exclude_pattern\" | git update-index --force-remove --stdin; git ls-files > /dev/stderr"
-
 
 # Find all first commits with listed files and find a subset of them that
 # predates all others
 
 roots=""
 files=$(git ls-files | grep -v "$exclude_pattern")
+
+
 for file in $files; do
     sfile_root="$(git rev-list --reverse HEAD -- $file | head -n1)"
     fail=0

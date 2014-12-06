@@ -1,4 +1,4 @@
-./neutron/db/vpn
-./neutron/services/vpn
-./neutron/tests/unit/db/vpn
-./neutron/tests/unit/services/vpn
+neutron/db/vpn
+neutron/services/vpn
+neutron/tests/unit/db/vpn
+neutron/tests/unit/services/vpn

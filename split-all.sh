@@ -26,7 +26,7 @@ my_echo "Starting neutron split into x-n..."
 $basedir/neutron-split.sh $src_repo x-n > $logfile.n 2>&1
 
 my_echo "Starting LBaaS split into x-l..."
-$basedir/services-split.sh $src_repo x-l lbaas neutron-lbaas neutron_lbaas > $logfile.l 2>&1
+$basedir/service-split.sh $src_repo x-l lbaas neutron-lbaas neutron_lbaas > $logfile.l 2>&1
 
 
 my_echo "Done"
