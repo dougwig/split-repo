@@ -19,13 +19,16 @@
 # Stop if there are any command failures
 set -e
 
-tmpdir=$(mktemp -d -t positron-split.XXXX)
+tmpdir=$(mktemp -d -t service-split.XXXX)
 mkdir -p $tmpdir
 logfile=$tmpdir/output.log
 echo "Logging to $logfile"
 
 src_repo="$1"
 dst_repo="$2"
+service="$3"
+repo_name="$4"
+module_name="$5"
 
 if [ ! -d "$src_repo" ]; then
     echo "usage: `basename $0` <source-repo-dir> <dest-repo-dir>"
@@ -37,15 +40,15 @@ fi
 
 # Redirect stdout/stderr to tee to write the log file
 # (borrowed from verbose mode handling in devstack)
-exec 1> >( awk '
-                {
-                    cmd ="date +\"%Y-%m-%d %H:%M:%S \""
-                    cmd | getline now
-                    close("date +\"%Y-%m-%d %H:%M:%S \"")
-                    sub(/^/, now)
-                    print
-                    fflush()
-                }' | tee "$logfile" ) 2>&1
+# exec 1> >( awk '
+#                 {
+#                     cmd ="date +\"%Y-%m-%d %H:%M:%S \""
+#                     cmd | getline now
+#                     close("date +\"%Y-%m-%d %H:%M:%S \"")
+#                     sub(/^/, now)
+#                     print
+#                     fflush()
+#                 }' | tee "$logfile" ) 2>&1
 
 function count_commits {
     echo
@@ -56,78 +59,8 @@ set -x
 
 # The list of files we want to start with.
 
-files_to_keep=$(cat - <<EOF
-
-CONTRIBUTING.rst
-HACKING.rst
-LICENSE
-MANIFEST.in
-README.rst
-TESTING.rst
-babel.cfg
-etc/neutron.conf
-neutron/common
-neutron/__init__.py
-neutron/db/common_db_mixin.py
-neutron/db/firewall
-neutron/db/__init__.py
-neutron/db/loadbalancer
-neutron/db/model_base.py
-neutron/db/models_v2.py
-neutron/db/vpn
-neutron/db/migration/alembic.ini
-neutron/db/migration/alembic_migrations/core_init_ops.py
-neutron/db/migration/alembic_migrations/env.py
-neutron/db/migration/alembic_migrations/firewall_init_ops.py
-neutron/db/migration/alembic_migrations/heal_script.py
-neutron/db/migration/alembic_migrations/__init__.py
-neutron/db/migration/alembic_migrations/lb_init_ops.py
-neutron/db/migration/alembic_migrations/loadbalancer_init_ops.py
-neutron/db/migration/alembic_migrations/other_extensions_init_ops.py
-neutron/db/migration/alembic_migrations/other_plugins_init_ops.py
-neutron/db/migration/alembic_migrations/versions
-neutron/db/migration/alembic_migrations/vpn_init_ops.py
-neutron/db/migration/cli.py
-neutron/db/migration/__init__.py
-neutron/db/migration/migrate_to_ml2.py
-neutron/db/migration/models
-neutron/db/migration/README
-neutron/extensions/__init__.py
-neutron/extensions/agent.py
-neutron/extensions/firewall.py
-neutron/extensions/lbaas_agentscheduler.py
-neutron/extensions/loadbalancer.py
-neutron/extensions/multiprovidernet.py
-neutron/extensions/vpnaas.py
-neutron/hacking
-neutron/services/__init__.py
-neutron/services/firewall
-neutron/services/loadbalancer
-neutron/services/provider_configuration.py
-neutron/services/service_base.py
-neutron/services/vpn
-neutron/tests/unit/__init__.py
-neutron/tests/unit/base.py
-neutron/tests/unit/tools.py
-neutron/tests/unit/db/__init__.py
-neutron/tests/unit/db/firewall
-neutron/tests/unit/db/loadbalancer
-neutron/tests/unit/db/vpn
-neutron/tests/unit/services/__init__.py
-neutron/tests/unit/services/firewall
-neutron/tests/unit/services/loadbalancer
-neutron/tests/unit/services/vpn
-neutron/tests/unit/test_extension_firewall.py
-openstack-common.conf
-requirements.txt
-run_tests.sh
-setup.cfg
-setup.py
-test-requirements.txt
-tools
-tox.ini
-
-EOF)
+basedir=`dirname "$0"`
+files_to_keep=$(cat $basedir/{services,$service}-keep.txt)
 
 # Get ourselves a play area.
 rsync -a "$src_repo"/ "$dst_repo"
@@ -208,6 +141,9 @@ git mv neutron positron
 # else
 #     find . -name '*.py' -exec sed -i "s/openstack.common/oslo.${new_lib}/" {} \;
 # fi
+
+# Pull in oslo-incubator
+echo "todo"
 
 # Commit the work we have done so far. Changes to make
 # it work will be applied on top.

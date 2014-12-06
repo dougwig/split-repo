@@ -1,0 +1,9 @@
+Stuff needing into a script somewhere:
+
+1. Alembic split
+2. Auto github
+3. LBaaS feature branch
+
+After running "split-all", the following steps must be done by hand:
+
+1. 
