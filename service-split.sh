@@ -133,13 +133,9 @@ git filter-branch --index-filter "$pruner" --parent-filter "$set_roots" --commit
 # Move things around
 echo "Moving files into place..."
 git mv neutron $module_name
-git add .
-git commit -m "Rename module"
 
 echo "Patching base files"
-patch -p1 < $basedir/$service.patch
-git add .
-git commit -m "Initial module tweaks"
+patch -p1 < ../split-repo/$service.patch
 
 echo "Fixing imports..."
 find $module_name -type f | while read file; do
@@ -149,17 +145,15 @@ find $module_name -type f | while read file; do
     replace "from neutron.db.loadbalancer" "from neutron_lbaas.db.loadbalancer" -- $file
     replace "from neutron.db.vpn" "from neutron_vpnaas.db.loadbalancer" -- $file
 done
-git add .
-git commit -m "Rename module imports"
 
 # Pull in oslo-incubator
 echo "Grabbing oslo incubator"
 cd ../oslo-incubator
 ./update.sh ../$dst_repo
 cd ../$dst_repo
-git add .
-git commit -m "Sync oslo incubator"
 
+git add .
+git commit -m "Rename module"
 
 echo "The scratch files and logs from the export are in: $tmpdir"
 echo "The next step is to make the tests work."
