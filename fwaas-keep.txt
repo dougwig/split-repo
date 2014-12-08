@@ -1,3 +1,4 @@
+etc/fwaas_driver.ini
 neutron/db/firewall
 neutron/services/firewall
 neutron/tests/unit/db/firewall

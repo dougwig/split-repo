@@ -1,3 +1,4 @@
+etc/lbaas_agent.ini
 neutron/db/loadbalancer
 neutron/services/loadbalancer
 neutron/tests/unit/db/loadbalancer

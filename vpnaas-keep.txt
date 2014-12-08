@@ -1,3 +1,4 @@
+etc/vpn_agent.ini
 neutron/db/vpn
 neutron/services/vpn
 neutron/tests/unit/db/vpn

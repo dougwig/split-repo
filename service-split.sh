@@ -133,22 +133,33 @@ git filter-branch --index-filter "$pruner" --parent-filter "$set_roots" --commit
 # Move things around
 echo "Moving files into place..."
 git mv neutron $module_name
+git add .
+git commit -m "Rename module"
 
-# Fix imports after moving files
-# echo "Fixing imports..."
-# if [[ -d oslo/$new_lib ]]; then
-#     find . -name '*.py' -exec sed -i "s/openstack.common.${new_lib}/oslo.${new_lib}/" {} \;
-# else
-#     find . -name '*.py' -exec sed -i "s/openstack.common/oslo.${new_lib}/" {} \;
-# fi
+echo "Patching base files"
+patch -p1 < $basedir/$service.patch
+git add .
+git commit -m "Initial module tweaks"
+
+echo "Fixing imports..."
+find $module_name -type f | while read file; do
+    replace "from neutron.services" "from $module_name.services" -- $file
+    replace "import neutron.services" "import $module_name.services" -- $file
+    replace "from neutron.db.firewall" "from neutron_fwaas.db.loadbalancer" -- $file
+    replace "from neutron.db.loadbalancer" "from neutron_lbaas.db.loadbalancer" -- $file
+    replace "from neutron.db.vpn" "from neutron_vpnaas.db.loadbalancer" -- $file
+done
+git add .
+git commit -m "Rename module imports"
 
 # Pull in oslo-incubator
-echo "todo"
+echo "Grabbing oslo incubator"
+cd ../oslo-incubator
+./update.sh ../$dst_repo
+cd ../$dst_repo
+git add .
+git commit -m "Sync oslo incubator"
 
-# Commit the work we have done so far. Changes to make
-# it work will be applied on top.
-#git add .
-#git commit -m "exported from oslo-incubator by graduate.sh"
 
 echo "The scratch files and logs from the export are in: $tmpdir"
 echo "The next step is to make the tests work."

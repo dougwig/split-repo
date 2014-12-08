@@ -17,7 +17,7 @@ src_repo="$1"
 if [ ! -d "$src_repo" ]; then
     echo "usage: `basename $0` <source-repo-dir>"
     exit 1
-elif [ -d x-n -o -d x-l -o -d x-f -o -d x-v ]; then
+elif [ -d x-lbaas -o -d x-fwaas -o -d x-vpnaas ]; then
     echo "ERROR: one of the dest repos already exists"
     exit 1
 fi
@@ -28,7 +28,7 @@ fi
 for x in lbaas vpnaas fwaas; do
   my_echo "Starting $x split..."
   $basedir/service-split.sh $src_repo x-$x $x neutron-$x neutron_$x > $logfile.l 2>&1 &
-end
+done
 wait
 
 my_echo "Done"
