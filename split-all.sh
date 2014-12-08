@@ -22,11 +22,13 @@ elif [ -d x-n -o -d x-l -o -d x-f -o -d x-v ]; then
     exit 1
 fi
 
-my_echo "Starting neutron split into x-n..."
-$basedir/neutron-split.sh $src_repo x-n > $logfile.n 2>&1
+#my_echo "Starting neutron split into x-n..."
+#$basedir/neutron-split.sh $src_repo x-n > $logfile.n 2>&1
 
-my_echo "Starting LBaaS split into x-l..."
-$basedir/service-split.sh $src_repo x-l lbaas neutron-lbaas neutron_lbaas > $logfile.l 2>&1
-
+for x in lbaas vpnaas fwaas; do
+  my_echo "Starting $x split..."
+  $basedir/service-split.sh $src_repo x-$x $x neutron-$x neutron_$x > $logfile.l 2>&1 &
+end
+wait
 
 my_echo "Done"

@@ -4,8 +4,14 @@ Stuff needing into a script somewhere:
 2. Auto github
 3. LBaaS feature branch
 
+Before running script
+
+1. Clone neutron
+2. Merge in feature branch
+
 After running "split-all", the following steps must be done by hand:
 
 1. Review output logs for errors.
 2. diff -ru with a vanilla neutron, to verify deletions are correct
 
+3. In service repos, run oslo incubator setup

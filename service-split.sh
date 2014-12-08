@@ -132,7 +132,7 @@ git filter-branch --index-filter "$pruner" --parent-filter "$set_roots" --commit
 
 # Move things around
 echo "Moving files into place..."
-git mv neutron positron
+git mv neutron $module_name
 
 # Fix imports after moving files
 # echo "Fixing imports..."
