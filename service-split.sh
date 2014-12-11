@@ -7,13 +7,10 @@
 #
 #  1. Clone a copy of the neutron repository to be manipulated.
 #  2. cd into the neutron repo to be changed.
-#  3. Run positron-split.sh with the directory names of a neutron repo and
-#     the new split repo
-#
-#       ~/bin/positron-split.sh ./neutron ./positron
-#
-#  4. Clean up the results a bit by hand to make the tests work
-#     (update dependencies, etc.).
+#  3. Checkout each remote branch, to ensure there is a local copy.
+#  4. Run this script
+#  5. FIX THE .gitreview FILE IN THE RESULTING OUTPUT REPO
+#  6. To push this repo somewhere remote, use "git push --all && git push --tags"
 #
 
 # Stop if there are any command failures
