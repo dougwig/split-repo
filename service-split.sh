@@ -128,7 +128,11 @@ EOF
 
 # Filter out commits for unrelated files
 echo "Pruning commits for unrelated files..."
-git filter-branch --index-filter "$pruner" --parent-filter "$set_roots" --commit-filter "$skip_empty" HEAD
+git filter-branch \
+    --index-filter "$pruner" \
+    --parent-filter "$set_roots" \
+    --commit-filter "$skip_empty" \
+    -- --all
 
 # Move things around
 echo "Moving files into place..."
